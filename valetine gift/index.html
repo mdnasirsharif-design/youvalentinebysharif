@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Valentine Moment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&family=Parisienne&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --pink: #ff4d6d; --dark-pink: #d63384; }
+        
+        body { 
+            margin: 0; padding: 0; overflow: hidden; 
+            background: url('bg.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            font-family: 'Quicksand', sans-serif; 
+            text-align: center; color: var(--dark-pink);
+        }
+
+        /* --- Animations --- */
+        @keyframes kirbyFloat {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-25px) scale(1.05); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .kirby-final { animation: kirbyFloat 2.5s infinite ease-in-out; width: 180px; }
+
+        @keyframes slideUpBox {
+            from { opacity: 0; transform: translateY(60px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-box { animation: slideUpBox 1s ease-out forwards; }
+
+        @keyframes pulseReady {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; color: #ff0000; }
+        }
+        .pulse-ready { animation: pulseReady 1.5s infinite; display: inline-block; font-weight: 700; }
+
+        @keyframes heartFall { to { transform: translateY(110vh) rotate(360deg); } }
+        .heart-particle { 
+            position: absolute; top: -90px; width: 80px; 
+            pointer-events: none; animation: heartFall 4.5s linear forwards; z-index: 100; 
+        }
+
+        /* --- Layout --- */
+        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; position: relative; z-index: 10; }
+        .hidden { display: none !important; }
+
+        .note-card { 
+            background: rgba(255, 255, 255, 0.96); 
+            padding: 45px; border-radius: 35px; 
+            width: 85%; max-width: 580px; 
+            position: relative; border: 3px solid #ffc2d1;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+        }
+
+        .cat-corner { position: absolute; top: -85px; right: -35px; width: 160px; z-index: 10; }
+
+        .btn { 
+            padding: 18px 45px; font-size: 1.5rem;
+            font-family: 'Pacifico', cursive; border-radius: 50px; 
+            border: none; background: var(--pink); color: white; 
+            cursor: pointer; margin-top: 30px; transition: 0.4s;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
+        }
+        .btn:hover { transform: translateY(-5px) scale(1.05); background: #ff758f; }
+
+        /* --- Typography --- */
+        .main-heading { font-family: 'Pacifico', cursive; font-size: 3.2rem; color: var(--pink); margin: 15px 0; }
+        .proposal-title { font-family: 'Parisienne', cursive; font-size: 5rem; font-weight: bold; margin: 25px 0; color: var(--pink); }
+        .note-heading { font-family: 'Dancing Script', cursive; font-size: 4rem; font-weight: bold; color: var(--pink); margin-bottom: 20px; }
+        .note-body { font-family: 'Quicksand', sans-serif; font-size: 1.4rem; line-height: 1.7; text-align: left; color: #333; font-weight: 600; }
+
+        .loading-box { width: 300px; height: 14px; background: #ffe5ec; border-radius: 10px; margin: 25px 0; overflow: hidden; border: 1.5px solid #ffc2d1; }
+        .progress-fill { width: 100%; height: 100%; background: var(--pink); animation: load 2.5s ease-in-out infinite; }
+        @keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop preload="auto"><source src="main-song.mp3" type="audio/mpeg"></audio>
+
+    <div id="section1" class="container">
+        <img src="kirby.png" class="kirby-final">
+        <h1 class="main-heading animate-box">A Valentine Moment</h1>
+        <div class="loading-box"><div class="progress-fill"></div></div>
+        <p style="font-weight: 700; font-size: 1.2rem;">is being prepared for you...</p>
+        <button class="btn animate-box" onclick="startApp()">Open This ✨</button>
+    </div>
+
+    <div id="section2" class="container hidden">
+        <p class="animate-box" style="font-size: 1.5rem; font-weight: 600;">Hey, I have made something special for you...</p>
+        <h1 class="proposal-title animate-box">Will You Be My Valentine? 💖</h1>
+        <div class="note-card animate-box">
+            <p style="font-size: 1.4rem; font-weight: bold;">A little reminder of what this day feels like with you.</p>
+            <p class="pulse-ready" style="margin-top: 15px;">Tap below when you're ready ✨</p>
+            <br>
+            <button class="btn" onclick="goToNote()">Open This 💌</button>
+        </div>
+    </div>
+
+    <div id="section3" class="container hidden">
+        <div class="note-card animate-box">
+            <img src="gatos_facherooo-removebg-preview.png" class="cat-corner">
+            <h2 class="note-heading">A Valentine Note ✉️</h2>
+            <div class="note-body">
+                <p><b>Dear zara,</b></p>
+                <p>Happy Valentine’s Day to the one who makes my heart smile. 😊
+                You are the best decision I have ever made, and I cherish you. 💖
+                Thank you for your warmth, your kindness, and your pure love. ✨.</p>
+                <p>I promise to always hold your hand through the highs and lows. 🤝
+                You’re not just my love, you’re my whole world and my home. 🌎❤️ .</p>
+            </div>
+            <button class="btn" onclick="startPhase2()">Keep Going →</button>
+        </div>
+    </div>
+
+    <script>
+        let heartInterval;
+
+        function startApp() {
+            const music = document.getElementById('bgMusic');
+            
+            // Setting volume to 40% (0.4) - adjust this number for lower/higher volume
+            music.volume = 0.4; 
+            
+            music.play();
+            showSection('section1', 'section2');
+            
+            heartInterval = setInterval(createHeart, 450);
+        }
+
+        function goToNote() {
+            clearInterval(heartInterval);
+            const existingHearts = document.querySelectorAll('.heart-particle');
+            existingHearts.forEach(h => h.remove());
+            showSection('section2', 'section3');
+        }
+
+        function showSection(oldId, newId) {
+            document.getElementById(oldId).classList.add('hidden');
+            const next = document.getElementById(newId);
+            next.classList.remove('hidden');
+            
+            const animatedElements = next.querySelectorAll('.animate-box');
+            animatedElements.forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; 
+                el.style.animation = null;
+            });
+        }
+
+        function createHeart() {
+            const heart = document.createElement('img');
+            heart.src = 'tranparent image heart.png';
+            heart.classList.add('heart-particle');
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => { if(heart) heart.remove(); }, 5000);
+        }
+
+        function startPhase2() {
+            window.location.href = "phase2.html"; 
+        }
+    </script>
+</body>
+</html>

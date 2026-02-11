@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Valentine's Playlist - Phase 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --soft-pink: #ffc2d1; 
+            --deep-pink: #ff4d6d;
+        }
+        
+        body { 
+            margin: 0; padding: 40px 20px; 
+            background: linear-gradient(135deg, #fff5f7 0%, #ffc2d1 50%, #ffe5ec 100%); 
+            font-family: 'Quicksand', sans-serif; 
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- NEW ENTRY ANIMATION --- */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            /* Animation set-up */
+            animation: phaseFadeEntry 1.2s ease-out forwards;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        @keyframes phaseFadeEntry {
+            from {
+                opacity: 0;
+                transform: translateY(30px); /* Niche se upar aayega */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .petal {
+            position: absolute; top: -10%;
+            background: white;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.9;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 { font-family: 'Pacifico', cursive; color: var(--deep-pink); font-size: 3rem; margin: 0; }
+        .header p { color: #d63384; font-weight: 600; font-style: italic; }
+
+        .playlist { display: flex; flex-direction: column; gap: 40px; width: 100%; max-width: 450px; }
+
+        .cassette { 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px);
+            border-radius: 25px; padding: 30px; position: relative; border: 2px solid white; 
+            box-shadow: 0 10px 30px rgba(255, 154, 162, 0.2); text-align: center; 
+        }
+
+        .active-card { transform: scale(1.05); border-color: var(--deep-pink); background: white !important; }
+
+        .title { font-family: 'Pacifico', cursive; font-size: 2.2rem; color: #444; margin: 8px 0; }
+        .romantic-line { font-size: 0.9rem; color: var(--deep-pink); font-weight: 700; font-style: italic; }
+        .sub-text { font-size: 0.85rem; color: #666; }
+
+        .play-btn { 
+            position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); 
+            background: var(--deep-pink); border: 3px solid white; width: 60px; height: 60px; 
+            border-radius: 50%; color: white; font-size: 1.5rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; z-index: 20;
+        }
+
+        .btn-next {
+            margin-top: 70px; padding: 15px 45px;
+            background: var(--deep-pink); color: white;
+            font-family: 'Pacifico', cursive; font-size: 1.5rem;
+            border: 2px solid white; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="petals-container"></div>
+
+    <div class="page-wrapper">
+        <div class="header">
+            <p>Hope they make you smile</p>
+            <h1>Songs That Feel Like Valentine's Day</h1>
+        </div>
+
+        <div class="playlist">
+            <div class="cassette" id="card-her">
+                <div class="romantic-line">✨ Only for your ears</div>
+                <div class="title">Her</div>
+                <div class="sub-text">"Because you're special"</div>
+                <button class="play-btn" onclick="playSong('her')">▶</button>
+            </div>
+            <div class="cassette" id="card-beside">
+                <div class="romantic-line">💖 Every beat for you</div>
+                <div class="title">Be My Side</div>
+                <div class="sub-text">"Some feelings feel calm"</div>
+                <button class="play-btn" onclick="playSong('beside')">▶</button>
+            </div>
+            <div class="cassette" id="card-chalo">
+                <div class="romantic-line">🌙 Lost in your thoughts</div>
+                <div class="title">Chalo Door Kahin</div>
+                <div class="sub-text">"Thinking of you"</div>
+                <button class="play-btn" onclick="playSong('chalo')">▶</button>
+            </div>
+        </div>
+
+        <button class="btn-next" onclick="startPhase3()">Let's Play A Game! →</button>
+    </div>
+
+    <audio id="main-player"></audio>
+
+    <script>
+        function createPetal() {
+            const container = document.getElementById('petals-container');
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            const size = Math.random() * 12 + 8 + 'px';
+            petal.style.width = size; petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 5 + 's';
+            container.appendChild(petal);
+            setTimeout(() => { petal.remove(); }, 7000);
+        }
+        setInterval(createPetal, 400);
+
+        const player = document.getElementById('main-player');
+        let currentKey = null;
+        const songs = { 'her': 'her.mp3', 'beside': 'beside.mp3', 'chalo': 'chalo.mp3' };
+
+        function playSong(key) {
+            const btns = document.querySelectorAll('.play-btn');
+            if(currentKey === key) {
+                if(player.paused) { 
+                    player.play(); 
+                    event.target.innerText = '⏸'; 
+                } else { 
+                    player.pause(); 
+                    event.target.innerText = '▶'; 
+                }
+                return;
+            }
+            player.pause();
+            btns.forEach(b => b.innerText = '▶');
+            document.querySelectorAll('.cassette').forEach(c => c.classList.remove('active-card'));
+            currentKey = key;
+            player.src = songs[key];
+            player.play();
+            event.target.innerText = '⏸';
+            document.getElementById(`card-${key}`).classList.add('active-card');
+        }
+
+        function startPhase3() {
+            window.location.href = "phase3.html"; 
+        }
+    </script>
+</body>
+</html>
